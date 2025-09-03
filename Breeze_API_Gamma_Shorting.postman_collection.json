@@ -1,0 +1,892 @@
+{
+  "info": {
+    "name": "Breeze API - Gamma Shorting AI Data Collection",
+    "description": "Complete API collection for testing Breeze API endpoints needed for gamma shorting AI system. Tests historical data, live data, option chains, VIX, and FII/DII data for ITC.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{session_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.icicidirect.com/breezeapi/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "your_api_key_here",
+      "type": "string"
+    },
+    {
+      "key": "secret_key",
+      "value": "your_secret_key_here",
+      "type": "string"
+    },
+    {
+      "key": "session_token",
+      "value": "your_session_token_here",
+      "type": "string"
+    },
+    {
+      "key": "target_symbol",
+      "value": "ITC",
+      "type": "string"
+    },
+    {
+      "key": "exchange",
+      "value": "NSE",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "1. Login & Get Session Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"api_key\": \"{{api_key}}\",\n  \"secret_key\": \"{{secret_key}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customer/authentication",
+              "host": ["{{base_url}}"],
+              "path": ["customer", "authentication"]
+            },
+            "description": "Authenticate and get session token for subsequent API calls"
+          }
+        },
+        {
+          "name": "2. Test Connection - Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customer/profile",
+              "host": ["{{base_url}}"],
+              "path": ["customer", "profile"]
+            },
+            "description": "Test API connectivity and authentication"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Historical Data (3 Years)",
+      "item": [
+        {
+          "name": "Historical Spot Prices - ITC (3 Years Daily)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/historicalcharts?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=cash&from_date=2022-01-01&to_date=2024-12-31&interval=1day",
+              "host": ["{{base_url}}"],
+              "path": ["historicalcharts"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "cash"
+                },
+                {
+                  "key": "from_date",
+                  "value": "2022-01-01"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "interval",
+                  "value": "1day"
+                }
+              ]
+            },
+            "description": "Get 3 years of daily OHLCV data for ITC - Foundation for volatility analysis"
+          }
+        },
+        {
+          "name": "Historical Option Chain - ITC (Sample Date)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/optionchain?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2024-12-26&right=others",
+              "host": ["{{base_url}}"],
+              "path": ["optionchain"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2024-12-26"
+                },
+                {
+                  "key": "right",
+                  "value": "others",
+                  "description": "Both calls and puts"
+                }
+              ]
+            },
+            "description": "Sample option chain with IV data - Test for ±5% and ±10% strike filtering"
+          }
+        },
+        {
+          "name": "Historical VIX Data (3 Years)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vixdata?from_date=2022-01-01&to_date=2024-12-31&interval=1day",
+              "host": ["{{base_url}}"],
+              "path": ["vixdata"],
+              "query": [
+                {
+                  "key": "from_date",
+                  "value": "2022-01-01"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "interval",
+                  "value": "1day"
+                }
+              ]
+            },
+            "description": "3 years of VIX data for volatility context and spike detection"
+          }
+        },
+        {
+          "name": "FII/DII Participation Data - ITC",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/participantwise?stock_code={{target_symbol}}&from_date=2022-01-01&to_date=2024-12-31",
+              "host": ["{{base_url}}"],
+              "path": ["participantwise"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "from_date",
+                  "value": "2022-01-01"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2024-12-31"
+                }
+              ]
+            },
+            "description": "FII/DII institutional flow data for ITC - Useful for market sentiment"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔴 Live Data (5-min Refresh)",
+      "item": [
+        {
+          "name": "Current Spot Price - ITC",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quotes?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=cash",
+              "host": ["{{base_url}}"],
+              "path": ["quotes"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "cash"
+                }
+              ]
+            },
+            "description": "Real-time spot price for ITC - Base for strike range calculations"
+          }
+        },
+        {
+          "name": "Live Option Chain - ITC (Current Month)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/optionchain?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2024-12-26&right=others",
+              "host": ["{{base_url}}"],
+              "path": ["optionchain"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2024-12-26",
+                  "description": "Update to current month expiry"
+                },
+                {
+                  "key": "right",
+                  "value": "others"
+                }
+              ]
+            },
+            "description": "Live option chain with current IV levels - Filter for ±5% and ±10% strikes"
+          }
+        },
+        {
+          "name": "Live Option Chain - ITC (Next Month)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/optionchain?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2025-01-30&right=others",
+              "host": ["{{base_url}}"],
+              "path": ["optionchain"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2025-01-30",
+                  "description": "Update to next month expiry"
+                },
+                {
+                  "key": "right",
+                  "value": "others"
+                }
+              ]
+            },
+            "description": "Next month option chain for current vs next month expiry decision support"
+          }
+        },
+        {
+          "name": "Current VIX Level",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vixdata",
+              "host": ["{{base_url}}"],
+              "path": ["vixdata"]
+            },
+            "description": "Current VIX level for volatility spike detection"
+          }
+        },
+        {
+          "name": "Current FII/DII Data - ITC",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/participantwise?stock_code={{target_symbol}}&date={{$isoTimestamp}}",
+              "host": ["{{base_url}}"],
+              "path": ["participantwise"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "date",
+                  "value": "{{$isoTimestamp}}",
+                  "description": "Current date for latest FII/DII data"
+                }
+              ]
+            },
+            "description": "Current institutional participation data for market sentiment"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Market Context Data",
+      "item": [
+        {
+          "name": "Market Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/marketdata/status",
+              "host": ["{{base_url}}"],
+              "path": ["marketdata", "status"]
+            },
+            "description": "Check if markets are open for live data collection"
+          }
+        },
+        {
+          "name": "Indices Data (Nifty, Bank Nifty)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/indices",
+              "host": ["{{base_url}}"],
+              "path": ["indices"]
+            },
+            "description": "Current index levels for market context"
+          }
+        },
+        {
+          "name": "Top F&O Stocks List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/stocks?segment=FNO&exchange_code={{exchange}}",
+              "host": ["{{base_url}}"],
+              "path": ["stocks"],
+              "query": [
+                {
+                  "key": "segment",
+                  "value": "FNO"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                }
+              ]
+            },
+            "description": "Get list of all F&O stocks for future expansion beyond ITC"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Gamma Shorting Specific Tests",
+      "item": [
+        {
+          "name": "Strike Range Test - ±5% from Spot",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/optionchain?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2024-12-26&right=others&strike_price_from=400&strike_price_to=500",
+              "host": ["{{base_url}}"],
+              "path": ["optionchain"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2024-12-26"
+                },
+                {
+                  "key": "right",
+                  "value": "others"
+                },
+                {
+                  "key": "strike_price_from",
+                  "value": "400",
+                  "description": "Update based on current spot ±5%"
+                },
+                {
+                  "key": "strike_price_to",
+                  "value": "500",
+                  "description": "Update based on current spot ±5%"
+                }
+              ]
+            },
+            "description": "Test filtering options within ±5% of spot price for gamma shorting"
+          }
+        },
+        {
+          "name": "Strike Range Test - ±10% from Spot",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/optionchain?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2024-12-26&right=others&strike_price_from=380&strike_price_to=520",
+              "host": ["{{base_url}}"],
+              "path": ["optionchain"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2024-12-26"
+                },
+                {
+                  "key": "right",
+                  "value": "others"
+                },
+                {
+                  "key": "strike_price_from",
+                  "value": "380",
+                  "description": "Update based on current spot ±10%"
+                },
+                {
+                  "key": "strike_price_to",
+                  "value": "520",
+                  "description": "Update based on current spot ±10%"
+                }
+              ]
+            },
+            "description": "Test filtering options within ±10% of spot price for wider gamma shorting range"
+          }
+        },
+        {
+          "name": "Greeks Data Test - Single Option",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quotes?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2024-12-26&right=call&strike_price=450",
+              "host": ["{{base_url}}"],
+              "path": ["quotes"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2024-12-26"
+                },
+                {
+                  "key": "right",
+                  "value": "call"
+                },
+                {
+                  "key": "strike_price",
+                  "value": "450"
+                }
+              ]
+            },
+            "description": "Test if Greeks (Delta, Gamma, Theta, Vega) are available in quotes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚡ Live Streaming (Real-time)",
+      "item": [
+        {
+          "name": "Live Feed Setup - ITC Spot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock_code\": \"{{target_symbol}}\",\n  \"exchange_code\": \"{{exchange}}\",\n  \"product_type\": \"cash\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/livestreaming",
+              "host": ["{{base_url}}"],
+              "path": ["livestreaming"]
+            },
+            "description": "Setup live streaming for real-time spot price updates"
+          }
+        },
+        {
+          "name": "Live Feed Setup - ITC Options",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock_code\": \"{{target_symbol}}\",\n  \"exchange_code\": \"{{exchange}}\",\n  \"product_type\": \"options\",\n  \"expiry_date\": \"2024-12-26\",\n  \"right\": \"call\",\n  \"strike_price\": \"450\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/livestreaming",
+              "host": ["{{base_url}}"],
+              "path": ["livestreaming"]
+            },
+            "description": "Setup live streaming for real-time option price and IV updates"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧪 Data Quality Tests",
+      "item": [
+        {
+          "name": "Data Completeness - Recent Week",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/historicalcharts?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=cash&from_date=2024-12-01&to_date=2024-12-07&interval=1day",
+              "host": ["{{base_url}}"],
+              "path": ["historicalcharts"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "cash"
+                },
+                {
+                  "key": "from_date",
+                  "value": "2024-12-01"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2024-12-07"
+                },
+                {
+                  "key": "interval",
+                  "value": "1day"
+                }
+              ]
+            },
+            "description": "Test data completeness for recent trading days"
+          }
+        },
+        {
+          "name": "IV Data Availability Test",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/optionchain?stock_code={{target_symbol}}&exchange_code={{exchange}}&product_type=options&expiry_date=2024-12-26&right=call&strike_price=450",
+              "host": ["{{base_url}}"],
+              "path": ["optionchain"],
+              "query": [
+                {
+                  "key": "stock_code",
+                  "value": "{{target_symbol}}"
+                },
+                {
+                  "key": "exchange_code",
+                  "value": "{{exchange}}"
+                },
+                {
+                  "key": "product_type",
+                  "value": "options"
+                },
+                {
+                  "key": "expiry_date",
+                  "value": "2024-12-26"
+                },
+                {
+                  "key": "right",
+                  "value": "call"
+                },
+                {
+                  "key": "strike_price",
+                  "value": "450"
+                }
+              ]
+            },
+            "description": "Test if implied volatility data is available in option responses"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate current date for FII/DII requests",
+          "const today = new Date().toISOString().split('T')[0];",
+          "pm.collectionVariables.set('current_date', today);",
+          "",
+          "// Calculate strike ranges based on assumed ITC spot price of 450",
+          "const spotPrice = 450; // Update this based on current ITC price",
+          "const range5Lower = Math.round(spotPrice * 0.95);",
+          "const range5Upper = Math.round(spotPrice * 1.05);",
+          "const range10Lower = Math.round(spotPrice * 0.90);",
+          "const range10Upper = Math.round(spotPrice * 1.10);",
+          "",
+          "pm.collectionVariables.set('range_5_lower', range5Lower);",
+          "pm.collectionVariables.set('range_5_upper', range5Upper);",
+          "pm.collectionVariables.set('range_10_lower', range10Lower);",
+          "pm.collectionVariables.set('range_10_upper', range10Upper);",
+          "",
+          "console.log(`Strike Ranges: ±5% (${range5Lower}-${range5Upper}), ±10% (${range10Lower}-${range10Upper})`);",
+          "",
+          "// Calculate next expiry dates",
+          "const now = new Date();",
+          "const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);",
+          "const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);",
+          "",
+          "// Find last Thursday of current month",
+          "const lastDayCurrentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);",
+          "while (lastDayCurrentMonth.getDay() !== 4) {",
+          "    lastDayCurrentMonth.setDate(lastDayCurrentMonth.getDate() - 1);",
+          "}",
+          "",
+          "// Find last Thursday of next month",
+          "const lastDayNextMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0);",
+          "while (lastDayNextMonth.getDay() !== 4) {",
+          "    lastDayNextMonth.setDate(lastDayNextMonth.getDate() - 1);",
+          "}",
+          "",
+          "const currentExpiry = lastDayCurrentMonth.toISOString().split('T')[0];",
+          "const nextExpiry = lastDayNextMonth.toISOString().split('T')[0];",
+          "",
+          "pm.collectionVariables.set('current_expiry', currentExpiry);",
+          "pm.collectionVariables.set('next_expiry', nextExpiry);",
+          "",
+          "console.log(`Expiry Dates: Current=${currentExpiry}, Next=${nextExpiry}`);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Common test script for all requests",
+          "pm.test('Response status is 200', function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response has data', function () {",
+          "    const responseJson = pm.response.json();",
+          "    pm.expect(responseJson).to.not.be.empty;",
+          "});",
+          "",
+          "// Log response structure for analysis",
+          "const responseJson = pm.response.json();",
+          "console.log('Response Structure:', Object.keys(responseJson));",
+          "",
+          "// Check for specific gamma shorting data points",
+          "if (pm.info.requestName.includes('Option')) {",
+          "    pm.test('Option data contains required fields', function () {",
+          "        if (Array.isArray(responseJson)) {",
+          "            const option = responseJson[0];",
+          "            pm.expect(option).to.have.property('strike_price');",
+          "            pm.expect(option).to.have.property('ltp');",
+          "            // Check for Greeks if available",
+          "            console.log('Available option fields:', Object.keys(option));",
+          "        }",
+          "    });",
+          "}",
+          "",
+          "if (pm.info.requestName.includes('VIX')) {",
+          "    pm.test('VIX data is available', function () {",
+          "        pm.expect(responseJson).to.have.property('current_value');",
+          "        console.log('Current VIX Level:', responseJson.current_value);",
+          "    });",
+          "}",
+          "",
+          "if (pm.info.requestName.includes('Spot Price')) {",
+          "    pm.test('Spot price data is available', function () {",
+          "        pm.expect(responseJson).to.have.property('ltp');",
+          "        console.log('Current Spot Price:', responseJson.ltp);",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ]
+}
