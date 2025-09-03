@@ -1,0 +1,17 @@
+{
+  "name": "breeze-api-explorer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/main.js",
+    "historical": "node src/historical-data.js",
+    "live": "node src/live-data.js",
+    "test-endpoints": "node src/test-endpoints.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "csv-writer": "^1.6.0",
+    "moment": "^2.29.4"
+  }
+}
